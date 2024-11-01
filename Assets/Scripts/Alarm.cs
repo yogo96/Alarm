@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,9 +7,8 @@ public class Alarm : MonoBehaviour
     private AudioSource _audioSource;
     private float _signalVolumeMin = 0f;
     private float _signalVolumeMax = 1f;
-    private float _targetSignalVolume;
     private float _signalVolumeStep = 0.5f;
-    private bool _isSwitchSignal;
+    private float _targetSignalVolume;
     private Coroutine _switchSignalCoroutine;
 
     private void Awake()
@@ -21,34 +19,22 @@ public class Alarm : MonoBehaviour
         _audioSource.Play();
     }
 
-    private void Update()
-    {
-        if (_isSwitchSignal) 
-            RestartSwitchVolumeCoroutine();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent<Robber>(out Robber robber))
-        {
-            _targetSignalVolume = _signalVolumeMax;
-            _isSwitchSignal = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent<Robber>(out Robber robber))
-        {
-            _targetSignalVolume = _signalVolumeMin;
-            _isSwitchSignal = true;
-        }
-    }
-
     private void OnDisable()
     {
         if (_switchSignalCoroutine != null) 
             StopCoroutine(_switchSignalCoroutine);
+    }
+
+    public void PlaySignal()
+    {
+        _targetSignalVolume = _signalVolumeMax;
+        RestartSwitchVolumeCoroutine();
+    }
+
+    public void StopSignal()
+    {
+        _targetSignalVolume = _signalVolumeMin;
+        RestartSwitchVolumeCoroutine();
     }
 
     private void RestartSwitchVolumeCoroutine()
@@ -64,7 +50,5 @@ public class Alarm : MonoBehaviour
                 .MoveTowards(_audioSource.volume, _targetSignalVolume, _signalVolumeStep * Time.deltaTime);
             yield return null;
         }
-
-        _isSwitchSignal = false;
     }
 }
