@@ -12,7 +12,7 @@ public class RobberMover : MonoBehaviour
     private Coroutine _WaitOnPointCoroutine;
     private float _distanceToPoint = 0.1f;
 
-    private void Start()
+    private void Awake()
     {
         _waitTime = new WaitForSeconds(2);
     }

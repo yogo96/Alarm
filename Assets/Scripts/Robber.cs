@@ -8,6 +8,5 @@ public class Robber : MonoBehaviour
     {
         transform.position = Vector3
             .MoveTowards(transform.position, pointPosition, _moveSpeed * Time.deltaTime);
-
     }
 }
