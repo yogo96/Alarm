@@ -9,7 +9,7 @@ public class RobberMover : MonoBehaviour
     private int _pointIndex = 0;
     private WaitForSeconds _waitTime;
     private bool _isWaitOnPoint = false;
-    private Coroutine _coroutine;
+    private Coroutine _WaitOnPointCoroutine;
     private float _distanceToPoint = 0.1f;
 
     private void Start()
@@ -25,10 +25,10 @@ public class RobberMover : MonoBehaviour
         Vector3 currentPointPosition = _movePoints[_pointIndex].transform.position;
         _robber.MoveTo(currentPointPosition);
 
-        if (Vector3.Distance(_robber.transform.position, currentPointPosition) <= _distanceToPoint)
+        if ((currentPointPosition - _robber.transform.position).sqrMagnitude <= _distanceToPoint)
         {
             if (_movePoints[_pointIndex].GetPointType() == PointType.House)
-                RestartCoroutine();
+                RestartWaitOnPointCoroutine();
 
             ChangePointIndex();
         }
@@ -36,8 +36,8 @@ public class RobberMover : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_coroutine != null)
-            StopCoroutine(_coroutine);
+        if (_WaitOnPointCoroutine != null)
+            StopCoroutine(_WaitOnPointCoroutine);
     }
 
     private void ChangePointIndex()
@@ -50,9 +50,9 @@ public class RobberMover : MonoBehaviour
         }
     }
 
-    private void RestartCoroutine()
+    private void RestartWaitOnPointCoroutine()
     {
-        _coroutine = StartCoroutine(ChangePointWaiting());
+        _WaitOnPointCoroutine = StartCoroutine(ChangePointWaiting());
     }
 
     private IEnumerator ChangePointWaiting()
